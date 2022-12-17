@@ -1,28 +1,35 @@
 import React,{useState} from "react"
+import Forms from "./Components/Forms";
 import Wrapper from "./Components/Wrapper";
-import CardItem from "./Components/CardItem";
-import People from "./Components/data";
+import Items from "./Components/Items";
 import Modal from "./Components/Modal";
+
+
   function App(){
-    const [isView,setIsView]=useState(false);
-    const [people,setPeople]=useState(People);
-    const peopleHandler=(id1)=>{
-       setIsView(true);
-       setPeople(People.filter((pers)=>pers.id===id1));
+    let [foodTable,setFoodTable]=useState([]);
+    const [isValid,setIsValid]=useState(true);
+    const validHandler=()=>{
+      setIsValid(false);
     }
+    const addFoodHandler=(food)=>{
+             setFoodTable(()=>{
+                return [...foodTable,food];
+               })
+              
+    }
+
     const viewHandler=()=>{
-      setIsView(!isView);
+      setIsValid(!isValid);
     }
    document.getElementById("body").classList="bg-slate-100"
     return(<React.Fragment>
       <div className="flex flex-col items-center py-12 w-full gap-8">
-            <h1 className="text-gray-600 text-5xl">Amis</h1>
-         <Wrapper className="w-2/5 bg-gray-50 rounded-md shadow-xl">
-             {People.map((person)=><CardItem image={person.image} name={person.name} age={person.age} personHandler={()=>peopleHandler(person.id)}/>)} 
-    </Wrapper>
-          
-     { isView ? <Modal name={people[0].name} image={people[0].image} age={people[0].age} metier={people[0].metier} viewHandler={viewHandler}/>:null}
-          
+           <h1 className="text-3xl text-gray-600 ">My Food App</h1>
+           <Wrapper className="bg-white rounded-lg w-3/5 shadow-lg">
+              <Forms handler={addFoodHandler} validInputHandler={validHandler}/>
+           </Wrapper>
+          {foodTable.map((foods)=> <Items image={foods.image} description={foods.description} name={foods.name} key={foods.id}/>)}
+          {isValid?null:<Modal viewHandler={viewHandler}/>}
       </div>
     </React.Fragment>)
   }
